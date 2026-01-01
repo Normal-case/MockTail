@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mocktail 🍹</title>
+  <link rel="stylesheet" href="styles/popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 헤더 -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="title">🍹 Mocktail</h1>
+        <div class="toggle-container">
+          <label class="switch">
+            <input type="checkbox" id="enableToggle" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label" id="statusLabel">활성화</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 탭 네비게이션 -->
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="rules">규칙</button>
+      <button class="tab-btn" data-tab="logs">로그</button>
+      <button class="tab-btn" data-tab="settings">설정</button>
+    </nav>
+
+    <!-- 규칙 탭 -->
+    <div class="tab-content active" id="rules-tab">
+      <div class="rules-header">
+        <button class="btn btn-primary" id="addRuleBtn">
+          <span>+</span> 새 규칙 추가
+        </button>
+      </div>
+
+      <div class="rules-list" id="rulesList">
+        <div class="empty-state">
+          <p>규칙이 없습니다</p>
+          <p class="empty-hint">새 규칙을 추가해보세요!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 로그 탭 -->
+    <div class="tab-content" id="logs-tab">
+      <div class="logs-header">
+        <button class="btn btn-secondary" id="clearLogsBtn">로그 지우기</button>
+      </div>
+      <div class="logs-list" id="logsList">
+        <div class="empty-state">
+          <p>로그가 없습니다</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 설정 탭 -->
+    <div class="tab-content" id="settings-tab">
+      <div class="settings-section">
+        <h3>일반 설정</h3>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="showNotifications">
+            알림 표시
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" id="autoReload">
+            규칙 변경 시 자동 새로고침
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>데이터</h3>
+        <button class="btn btn-secondary" id="exportBtn">규칙 내보내기</button>
+        <button class="btn btn-secondary" id="importBtn">규칙 가져오기</button>
+        <input type="file" id="importFile" accept=".json" style="display: none;">
+      </div>
+
+      <div class="settings-section">
+        <h3>정보</h3>
+        <p class="info-text">버전: 1.0.0</p>
+        <p class="info-text">개발자를 위한 API Mock 도구</p>
+        <a href="https://github.com" target="_blank" class="link">GitHub에서 보기</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 규칙 추가/편집 모달 -->
+  <div class="modal" id="ruleModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">새 규칙 추가</h2>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="ruleForm">
+          <div class="form-group">
+            <label for="ruleName">규칙 이름 *</label>
+            <input type="text" id="ruleName" placeholder="예: Mock User API" required>
+          </div>
+
+          <div class="form-group">
+            <label for="urlPattern">URL 패턴 *</label>
+            <input type="text" id="urlPattern" placeholder="예: https://api.example.com/users" required>
+          </div>
+
+          <div class="form-group">
+            <label for="matchType">매칭 방식</label>
+            <select id="matchType">
+              <option value="contains">포함 (Contains)</option>
+              <option value="exact">정확히 일치 (Exact)</option>
+              <option value="startsWith">시작 (Starts with)</option>
+              <option value="regex">정규식 (Regex)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="actionType">액션 타입</label>
+            <select id="actionType">
+              <option value="replace">전체 교체</option>
+              <option value="merge">병합</option>
+              <option value="modify">필드 수정</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mockData">Mock 데이터 (JSON) *</label>
+            <textarea id="mockData" rows="8" placeholder='{"message": "Hello from Mocktail!"}'></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="statusCode">응답 상태 코드 (선택)</label>
+            <input type="number" id="statusCode" placeholder="200" min="100" max="599">
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" id="ruleEnabled" checked>
+              규칙 활성화
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">취소</button>
+            <button type="submit" class="btn btn-primary">저장</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/popup.js"></script>
+</body>
+</html>
+
+

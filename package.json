@@ -1,0 +1,25 @@
+{
+  "name": "mocktail",
+  "version": "1.0.0",
+  "description": "🍹 API 응답을 가로채고 수정하는 개발자를 위한 크롬 확장 프로그램",
+  "author": "Your Name",
+  "license": "MIT",
+  "keywords": [
+    "chrome-extension",
+    "api-mock",
+    "fetch-interceptor",
+    "developer-tools",
+    "mock-api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/mocktail.git"
+  },
+  "scripts": {
+    "build": "echo 'No build step required'",
+    "lint": "echo 'Linting...'",
+    "generate-icons": "open icons/generate-icons.html"
+  }
+}
+
+

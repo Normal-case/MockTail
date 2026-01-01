@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 원 -->
+  <circle cx="64" cy="64" r="60" fill="url(#grad1)"/>
+  
+  <!-- 칵테일 잔 -->
+  <g transform="translate(64, 64)">
+    <!-- 잔 -->
+    <path d="M -20 -15 L -8 25 L 8 25 L 20 -15 Z" fill="white" opacity="0.9"/>
+    
+    <!-- 줄기 -->
+    <rect x="-3" y="25" width="6" height="15" fill="white" opacity="0.9"/>
+    
+    <!-- 받침 -->
+    <ellipse cx="0" cy="40" rx="12" ry="3" fill="white" opacity="0.9"/>
+    
+    <!-- 액체 -->
+    <path d="M -18 -10 L -10 18 L 10 18 L 18 -10 Z" fill="#FF6B9D" opacity="0.8"/>
+    
+    <!-- 거품 -->
+    <circle cx="-8" cy="5" r="3" fill="white" opacity="0.6"/>
+    <circle cx="5" cy="8" r="2.5" fill="white" opacity="0.6"/>
+    <circle cx="-2" cy="12" r="2" fill="white" opacity="0.6"/>
+    
+    <!-- 장식 (우산) -->
+    <g transform="translate(12, -15) scale(0.8)">
+      <path d="M 0 -8 Q -6 -4 -6 0 L 0 0 Z" fill="#FFD93D"/>
+      <path d="M 0 -8 Q 6 -4 6 0 L 0 0 Z" fill="#FFB627"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#8B4513" stroke-width="1"/>
+    </g>
+  </g>
+</svg>
+
+
