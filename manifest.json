@@ -3,6 +3,7 @@
   "name": "Mocktail",
   "version": "1.0.0",
   "description": "🍹 API 응답을 가로채고 수정하는 개발자 도구",
+  "devtools_page": "devtools.html",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "background": {
@@ -23,7 +24,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["src/*"],
+      "resources": ["src/*", "panel.html"],
       "matches": ["<all_urls>"]
     }
   ]
