@@ -1,12 +1,13 @@
 /**
  * Project List View
- * 프로젝트 목록을 보여주는 화면
+ * Screen showing the list of projects
  */
 
-export class ProjectListView {
+import { View } from "../../core/view.js";
+
+export class ProjectListView extends View {
   constructor(router, storage) {
-    this.router = router;
-    this.storage = storage;
+    super(router, storage);
     this.projects = [];
     this.editingProjectId = null;
   }
@@ -34,7 +35,7 @@ export class ProjectListView {
                     } APIs</span>
                 </div>
             </div>
-        `
+        `,
       )
       .join("");
 
@@ -71,68 +72,91 @@ export class ProjectListView {
         `;
   }
 
-  async mount(container) {
-    container.innerHTML = await this.render();
-    this.attachEvents();
-  }
-
   attachEvents() {
-    // + 버튼: 새 프로젝트 추가
-    const addBtn = document.getElementById("add-project");
-    if (addBtn) {
-      addBtn.addEventListener("click", () => this.handleAddProject());
-    }
+    // + button: Add new project
+    this.addEventListener("add-project", "click", () =>
+      this.handleAddProject(),
+    );
 
-    // 첫 프로젝트 만들기 버튼 (empty state)
-    const createFirstBtn = document.getElementById("create-first-project");
-    if (createFirstBtn) {
-      createFirstBtn.addEventListener("click", () => this.handleAddProject());
-    }
+    // Create first project button (empty state)
+    this.addEventListener("create-first-project", "click", () =>
+      this.handleAddProject(),
+    );
 
-    // 프로젝트 아이템 클릭: 상세 화면으로 이동
+    // Project item click: Navigate to detail screen
     const projectItems = document.querySelectorAll(".project-item");
     projectItems.forEach((item) => {
-      item.addEventListener("click", (e) => {
-        // input을 클릭한 경우는 제외
+      const handler = (e) => {
+        // Exclude clicks on input
         if (e.target.classList.contains("project-name")) {
           return;
         }
         const projectId = item.dataset.projectId;
         this.router.navigate("project-detail", { projectId });
+      };
+      item.addEventListener("click", handler);
+
+      // Store handler for cleanup
+      this.handlers.set(`project-item-${item.dataset.projectId}`, {
+        element: item,
+        event: "click",
+        handler,
       });
     });
 
-    // 프로젝트 이름 더블클릭: 편집 모드
+    // Project name double-click: Edit mode
     const projectNames = document.querySelectorAll(".project-name");
     projectNames.forEach((input) => {
-      input.addEventListener("dblclick", (e) => {
+      const dblclickHandler = (e) => {
         e.stopPropagation();
         this.handleEditProjectName(input);
-      });
+      };
 
-      input.addEventListener("blur", () => {
+      const blurHandler = () => {
         this.handleSaveProjectName(input);
-      });
+      };
 
-      input.addEventListener("keydown", (e) => {
+      const keydownHandler = (e) => {
         if (e.key === "Enter") {
           input.blur();
         } else if (e.key === "Escape") {
           this.handleCancelEdit(input);
         }
+      };
+
+      input.addEventListener("dblclick", dblclickHandler);
+      input.addEventListener("blur", blurHandler);
+      input.addEventListener("keydown", keydownHandler);
+
+      // Store handlers for cleanup
+      const projectId = input.dataset.projectId;
+      this.handlers.set(`project-name-dblclick-${projectId}`, {
+        element: input,
+        event: "dblclick",
+        handler: dblclickHandler,
+      });
+      this.handlers.set(`project-name-blur-${projectId}`, {
+        element: input,
+        event: "blur",
+        handler: blurHandler,
+      });
+      this.handlers.set(`project-name-keydown-${projectId}`, {
+        element: input,
+        event: "keydown",
+        handler: keydownHandler,
       });
     });
   }
 
   async handleAddProject() {
     const project = await this.storage.createProject("Untitled Project");
-    // 화면 새로고침
+    // Refresh screen
     await this.mount(this.router.container);
-    // 새로 만든 프로젝트 이름을 편집 모드로
+    // Set new project name to edit mode
     this.editingProjectId = project.id;
     await this.mount(this.router.container);
     const input = document.querySelector(
-      `input[data-project-id="${project.id}"]`
+      `input[data-project-id="${project.id}"]`,
     );
     if (input) {
       input.removeAttribute("readonly");
@@ -173,9 +197,5 @@ export class ProjectListView {
     input.setAttribute("readonly", "true");
     input.classList.remove("editing");
     input.blur();
-  }
-
-  unmount() {
-    // 이벤트 리스너 정리
   }
 }

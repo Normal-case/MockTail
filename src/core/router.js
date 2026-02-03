@@ -1,103 +1,108 @@
 /**
- * 화면 전환을 관리하는 라우터
+ * Router
+ * Manages screen transitions
  */
 
 export class Router {
-    constructor() {
-        this.views = new Map();
-        this.currentView = null;
-        this.history = [];
-        this.container = null;
+  constructor(dependencies = {}) {
+    this.views = new Map(); // Store ViewClass (not instances)
+    this.currentView = null; // { name, data } information only
+    this.currentViewInstance = null; // Currently active view instance
+    this.history = [];
+    this.container = null;
+    this.dependencies = dependencies; // Dependencies needed for view creation (router, storage, etc.)
+  }
+
+  /**
+   * Initialize router
+   */
+  init(containerId = "app") {
+    this.container = document.getElementById(containerId);
+    if (!this.container) {
+      throw new Error(`Container with id "${containerId}" not found`);
+    }
+  }
+
+  /**
+   * Register view (register class, not instance)
+   */
+  register(name, ViewClass) {
+    this.views.set(name, ViewClass);
+  }
+
+  /**
+   * Navigate to screen
+   */
+  async navigate(viewName, data = null) {
+    const ViewClass = this.views.get(viewName);
+    if (!ViewClass) {
+      console.error(`View "${viewName}" not found`);
+      return;
     }
 
-    /**
-     * 라우터 초기화
-     */
-    init(containerId = 'app') {
-        this.container = document.getElementById(containerId);
-        if (!this.container) {
-            throw new Error(`Container with id "${containerId}" not found`);
-        }
+    // Unmount current view and clean up instance
+    if (this.currentViewInstance) {
+      if (this.currentViewInstance.unmount) {
+        this.currentViewInstance.unmount();
+      }
+      this.currentViewInstance = null; // Remove reference for GC
     }
 
-    /**
-     * 뷰 등록
-     */
-    register(name, viewInstance) {
-        this.views.set(name, viewInstance);
+    // Add to history
+    if (this.currentView) {
+      this.history.push(this.currentView);
     }
 
-    /**
-     * 화면 전환
-     */
-    async navigate(viewName, data = null) {
-        const view = this.views.get(viewName);
-        if (!view) {
-            console.error(`View "${viewName}" not found`);
-            return;
-        }
+    // Create new view instance and mount
+    this.currentView = { name: viewName, data };
+    this.currentViewInstance = new ViewClass(this, this.dependencies.storage);
+    await this.currentViewInstance.mount(this.container, data);
+  }
 
-        // 현재 뷰 언마운트
-        if (this.currentView) {
-            const currentViewInstance = this.views.get(this.currentView.name);
-            if (currentViewInstance && currentViewInstance.unmount) {
-                currentViewInstance.unmount();
-            }
-        }
-
-        // 히스토리에 추가
-        if (this.currentView) {
-            this.history.push(this.currentView);
-        }
-
-        // 새 뷰 마운트
-        this.currentView = { name: viewName, data };
-        await view.mount(this.container, data);
+  /**
+   * Go back to previous screen
+   */
+  async goBack() {
+    if (this.history.length === 0) {
+      return;
     }
 
-    /**
-     * 이전 화면으로 돌아가기
-     */
-    async goBack() {
-        if (this.history.length === 0) {
-            return;
-        }
+    const previous = this.history.pop();
 
-        const previous = this.history.pop();
-        
-        // 현재 뷰 언마운트
-        if (this.currentView) {
-            const currentViewInstance = this.views.get(this.currentView.name);
-            if (currentViewInstance && currentViewInstance.unmount) {
-                currentViewInstance.unmount();
-            }
-        }
-
-        // 이전 뷰 마운트 (히스토리에 추가하지 않음)
-        this.currentView = previous;
-        const view = this.views.get(previous.name);
-        await view.mount(this.container, previous.data);
+    // Unmount current view and clean up instance
+    if (this.currentViewInstance) {
+      if (this.currentViewInstance.unmount) {
+        this.currentViewInstance.unmount();
+      }
+      this.currentViewInstance = null; // Remove reference for GC
     }
 
-    /**
-     * 현재 뷰 정보 가져오기
-     */
-    getCurrentView() {
-        return this.currentView;
-    }
+    // Create previous view instance and mount (don't add to history)
+    this.currentView = previous;
+    const ViewClass = this.views.get(previous.name);
+    this.currentViewInstance = new ViewClass(this, this.dependencies.storage);
+    await this.currentViewInstance.mount(this.container, previous.data);
+  }
 
-    /**
-     * 히스토리 초기화
-     */
-    clearHistory() {
-        this.history = [];
-    }
+  /**
+   * Get current view information
+   */
+  getCurrentView() {
+    return this.currentView;
+  }
 
-    /**
-     * 특정 화면으로 이동하면서 히스토리 초기화
-     */
-    async reset(viewName, data = null) {
-        this.clearHistory();
-        await this.navigate(viewName, data);
-    }
+  /**
+   * Clear history
+   */
+  clearHistory() {
+    this.history = [];
+  }
+
+  /**
+   * Navigate to specific screen while clearing history
+   */
+  async reset(viewName, data = null) {
+    this.clearHistory();
+    await this.navigate(viewName, data);
+  }
 }
