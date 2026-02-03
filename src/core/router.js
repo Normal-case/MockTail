@@ -103,6 +103,18 @@ export class Router {
    */
   async reset(viewName, data = null) {
     this.clearHistory();
+
+    // Unmount current view if exists
+    if (this.currentViewInstance) {
+      if (this.currentViewInstance.unmount) {
+        this.currentViewInstance.unmount();
+      }
+      this.currentViewInstance = null;
+    }
+
+    // Reset current view to prevent adding to history
+    this.currentView = null;
+
     await this.navigate(viewName, data);
   }
 }

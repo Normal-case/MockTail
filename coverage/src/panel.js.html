@@ -159,7 +159,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >/**</span></span></span>
 <span class="cstat-no" title="statement not covered" > * Mocktail Popup</span>
-<span class="cstat-no" title="statement not covered" > * Chrome Extension Popup 메인 진입점</span>
+<span class="cstat-no" title="statement not covered" > * Chrome Extension Popup main entry point</span>
 <span class="cstat-no" title="statement not covered" > */</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >import { Router } from "./core/router.js";</span>
@@ -168,27 +168,27 @@
 <span class="cstat-no" title="statement not covered" >import { ProjectDetailView } from "./views/project-detail/project-detail.js";</span>
 <span class="cstat-no" title="statement not covered" >import { ApiFormView } from "./views/api-form/api-form.js";</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >// 전역 인스턴스</span>
+<span class="cstat-no" title="statement not covered" >// Global instances</span>
 <span class="cstat-no" title="statement not covered" >const storage = new Storage();</span>
-<span class="cstat-no" title="statement not covered" >const router = new Router();</span>
+<span class="cstat-no" title="statement not covered" >const router = new Router({ storage }); // Dependency injection</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >/**</span>
-<span class="cstat-no" title="statement not covered" > * 앱 초기화</span>
+<span class="cstat-no" title="statement not covered" > * Initialize app</span>
 <span class="cstat-no" title="statement not covered" > */</span>
 <span class="cstat-no" title="statement not covered" >async function init() {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
-<span class="cstat-no" title="statement not covered" >    // 라우터 초기화</span>
+<span class="cstat-no" title="statement not covered" >    // Initialize router</span>
 <span class="cstat-no" title="statement not covered" >    router.init("app");</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    // 뷰 등록</span>
-<span class="cstat-no" title="statement not covered" >    router.register("project-list", new ProjectListView(router, storage));</span>
-<span class="cstat-no" title="statement not covered" >    router.register("project-detail", new ProjectDetailView(router, storage));</span>
-<span class="cstat-no" title="statement not covered" >    router.register("api-form", new ApiFormView(router, storage));</span>
+<span class="cstat-no" title="statement not covered" >    // Register views (classes only, instances created on navigate)</span>
+<span class="cstat-no" title="statement not covered" >    router.register("project-list", ProjectListView);</span>
+<span class="cstat-no" title="statement not covered" >    router.register("project-detail", ProjectDetailView);</span>
+<span class="cstat-no" title="statement not covered" >    router.register("api-form", ApiFormView);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    // 프로젝트 목록 화면으로 시작 (프로젝트 없으면 empty state 표시)</span>
+<span class="cstat-no" title="statement not covered" >    // Start with project list screen (shows empty state if no projects)</span>
 <span class="cstat-no" title="statement not covered" >    await router.navigate("project-list");</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >    console.error("앱 초기화 오류:", error);</span>
+<span class="cstat-no" title="statement not covered" >    console.error("App initialization error:", error);</span>
 <span class="cstat-no" title="statement not covered" >    document.getElementById("app").innerHTML = `</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div style="padding: 20px; text-align: center; color: #d32f2f;"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;p&gt;앱을 시작할 수 없습니다.&lt;/p&gt;</span>
@@ -198,7 +198,7 @@
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >// DOM 로드 완료 후 초기화</span>
+<span class="cstat-no" title="statement not covered" >// Initialize after DOM load</span>
 <span class="cstat-no" title="statement not covered" >if (document.readyState === "loading") {</span>
 <span class="cstat-no" title="statement not covered" >  document.addEventListener("DOMContentLoaded", init);</span>
 <span class="cstat-no" title="statement not covered" >} else {</span>
@@ -211,7 +211,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T06:57:31.621Z
+                at 2026-02-03T16:28:55.591Z
             </div>
         <script src="../prettify.js"></script>
         <script>

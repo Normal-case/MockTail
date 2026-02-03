@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>145/145</span>
+                <span class='fraction'>147/147</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>145/145</span>
+                <span class='fraction'>147/147</span>
             </div>
         
             
@@ -227,15 +227,21 @@
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
 <a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">46x</span>
-<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">226x</span>
+<span class="cline-any cline-yes">226x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -396,164 +402,167 @@
  * 프로젝트와 API Mock 데이터를 관리합니다
  */
 &nbsp;
+// Storage 키 상수 (읽기 전용)
+const STORAGE_KEY = "mocktail_data";
+&nbsp;
 export class Storage {
-    constructor() {
-        this.STORAGE_KEY = 'mocktail_data';
+  get STORAGE_KEY() {
+    return STORAGE_KEY;
+  }
+&nbsp;
+  /**
+   * 전체 데이터 가져오기
+   */
+  async getData() {
+    return new Promise((resolve) =&gt; {
+      chrome.storage.local.get([STORAGE_KEY], (result) =&gt; {
+        resolve(result[STORAGE_KEY] || { projects: [] });
+      });
+    });
+  }
+&nbsp;
+  /**
+   * 전체 데이터 저장하기
+   */
+  async setData(data) {
+    return new Promise((resolve) =&gt; {
+      chrome.storage.local.set({ [STORAGE_KEY]: data }, resolve);
+    });
+  }
+&nbsp;
+  /**
+   * 모든 프로젝트 가져오기
+   */
+  async getProjects() {
+    const data = await this.getData();
+    return data.projects <span class="branch-0 cbranch-no" title="branch not covered" >|| [];</span>
+  }
+&nbsp;
+  /**
+   * 특정 프로젝트 가져오기
+   */
+  async getProject(projectId) {
+    const projects = await this.getProjects();
+    return projects.find((p) =&gt; p.id === projectId);
+  }
+&nbsp;
+  /**
+   * 새 프로젝트 생성
+   */
+  async createProject(name = "Untitled Project") {
+    const data = await this.getData();
+    const newProject = {
+      id: this.generateId(),
+      name,
+      createdAt: Date.now(),
+      apis: [],
+    };
+    data.projects.push(newProject);
+    await this.setData(data);
+    return newProject;
+  }
+&nbsp;
+  /**
+   * 프로젝트 업데이트
+   */
+  async updateProject(projectId, updates) {
+    const data = await this.getData();
+    const index = data.projects.findIndex((p) =&gt; p.id === projectId);
+    if (index !== -1) {
+      data.projects[index] = { ...data.projects[index], ...updates };
+      await this.setData(data);
+      return data.projects[index];
     }
+    return null;
+  }
 &nbsp;
-    /**
-     * 전체 데이터 가져오기
-     */
-    async getData() {
-        return new Promise((resolve) =&gt; {
-            chrome.storage.local.get([this.STORAGE_KEY], (result) =&gt; {
-                resolve(result[this.STORAGE_KEY] || { projects: [] });
-            });
-        });
+  /**
+   * 프로젝트 삭제
+   */
+  async deleteProject(projectId) {
+    const data = await this.getData();
+    data.projects = data.projects.filter((p) =&gt; p.id !== projectId);
+    await this.setData(data);
+  }
+&nbsp;
+  /**
+   * API Mock 가져오기
+   */
+  async getAPIs(projectId) {
+    const project = await this.getProject(projectId);
+    return project ? project.apis : [];
+  }
+&nbsp;
+  /**
+   * API Mock 추가
+   */
+  async createAPI(projectId, apiData) {
+    const project = await this.getProject(projectId);
+    if (!project) return null;
+&nbsp;
+    const newAPI = {
+      id: this.generateId(),
+      url: apiData.url,
+      method: apiData.method || "GET",
+      response: apiData.response || {},
+      enabled: apiData.enabled !== undefined ? apiData.enabled : true,
+      createdAt: Date.now(),
+    };
+&nbsp;
+    project.apis.push(newAPI);
+    await this.updateProject(projectId, { apis: project.apis });
+    return newAPI;
+  }
+&nbsp;
+  /**
+   * API Mock 업데이트
+   */
+  async updateAPI(projectId, apiId, updates) {
+    const project = await this.getProject(projectId);
+    if (!project) return null;
+&nbsp;
+    const apiIndex = project.apis.findIndex((api) =&gt; api.id === apiId);
+    if (apiIndex !== -1) {
+      project.apis[apiIndex] = { ...project.apis[apiIndex], ...updates };
+      await this.updateProject(projectId, { apis: project.apis });
+      return project.apis[apiIndex];
     }
+    return null;
+  }
 &nbsp;
-    /**
-     * 전체 데이터 저장하기
-     */
-    async setData(data) {
-        return new Promise((resolve) =&gt; {
-            chrome.storage.local.set({ [this.STORAGE_KEY]: data }, resolve);
-        });
+  /**
+   * API Mock 삭제
+   */
+  async deleteAPI(projectId, apiId) {
+    const project = await this.getProject(projectId);
+    if (!project) return;
+&nbsp;
+    project.apis = project.apis.filter((api) =&gt; api.id !== apiId);
+    await this.updateProject(projectId, { apis: project.apis });
+  }
+&nbsp;
+  /**
+   * API Mock 활성화/비활성화 토글
+   */
+  async toggleAPI(projectId, apiId) {
+    const project = await this.getProject(projectId);
+    if (!project) return null;
+&nbsp;
+    const api = project.apis.find((api) =&gt; api.id === apiId);
+    if (api) {
+      api.enabled = !api.enabled;
+      await this.updateProject(projectId, { apis: project.apis });
+      return api;
     }
+    return null;
+  }
 &nbsp;
-    /**
-     * 모든 프로젝트 가져오기
-     */
-    async getProjects() {
-        const data = await this.getData();
-        return data.projects <span class="branch-0 cbranch-no" title="branch not covered" >|| [];</span>
-    }
-&nbsp;
-    /**
-     * 특정 프로젝트 가져오기
-     */
-    async getProject(projectId) {
-        const projects = await this.getProjects();
-        return projects.find(p =&gt; p.id === projectId);
-    }
-&nbsp;
-    /**
-     * 새 프로젝트 생성
-     */
-    async createProject(name = 'Untitled Project') {
-        const data = await this.getData();
-        const newProject = {
-            id: this.generateId(),
-            name,
-            createdAt: Date.now(),
-            apis: []
-        };
-        data.projects.push(newProject);
-        await this.setData(data);
-        return newProject;
-    }
-&nbsp;
-    /**
-     * 프로젝트 업데이트
-     */
-    async updateProject(projectId, updates) {
-        const data = await this.getData();
-        const index = data.projects.findIndex(p =&gt; p.id === projectId);
-        if (index !== -1) {
-            data.projects[index] = { ...data.projects[index], ...updates };
-            await this.setData(data);
-            return data.projects[index];
-        }
-        return null;
-    }
-&nbsp;
-    /**
-     * 프로젝트 삭제
-     */
-    async deleteProject(projectId) {
-        const data = await this.getData();
-        data.projects = data.projects.filter(p =&gt; p.id !== projectId);
-        await this.setData(data);
-    }
-&nbsp;
-    /**
-     * API Mock 가져오기
-     */
-    async getAPIs(projectId) {
-        const project = await this.getProject(projectId);
-        return project ? project.apis : [];
-    }
-&nbsp;
-    /**
-     * API Mock 추가
-     */
-    async createAPI(projectId, apiData) {
-        const project = await this.getProject(projectId);
-        if (!project) return null;
-&nbsp;
-        const newAPI = {
-            id: this.generateId(),
-            url: apiData.url,
-            method: apiData.method || 'GET',
-            response: apiData.response || {},
-            enabled: apiData.enabled !== undefined ? apiData.enabled : true,
-            createdAt: Date.now()
-        };
-&nbsp;
-        project.apis.push(newAPI);
-        await this.updateProject(projectId, { apis: project.apis });
-        return newAPI;
-    }
-&nbsp;
-    /**
-     * API Mock 업데이트
-     */
-    async updateAPI(projectId, apiId, updates) {
-        const project = await this.getProject(projectId);
-        if (!project) return null;
-&nbsp;
-        const apiIndex = project.apis.findIndex(api =&gt; api.id === apiId);
-        if (apiIndex !== -1) {
-            project.apis[apiIndex] = { ...project.apis[apiIndex], ...updates };
-            await this.updateProject(projectId, { apis: project.apis });
-            return project.apis[apiIndex];
-        }
-        return null;
-    }
-&nbsp;
-    /**
-     * API Mock 삭제
-     */
-    async deleteAPI(projectId, apiId) {
-        const project = await this.getProject(projectId);
-        if (!project) return;
-&nbsp;
-        project.apis = project.apis.filter(api =&gt; api.id !== apiId);
-        await this.updateProject(projectId, { apis: project.apis });
-    }
-&nbsp;
-    /**
-     * API Mock 활성화/비활성화 토글
-     */
-    async toggleAPI(projectId, apiId) {
-        const project = await this.getProject(projectId);
-        if (!project) return null;
-&nbsp;
-        const api = project.apis.find(api =&gt; api.id === apiId);
-        if (api) {
-            api.enabled = !api.enabled;
-            await this.updateProject(projectId, { apis: project.apis });
-            return api;
-        }
-        return null;
-    }
-&nbsp;
-    /**
-     * 고유 ID 생성
-     */
-    generateId() {
-        return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    }
+  /**
+   * 고유 ID 생성
+   */
+  generateId() {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -562,7 +571,7 @@ export class Storage {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T06:57:31.621Z
+                at 2026-02-03T16:28:55.591Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
