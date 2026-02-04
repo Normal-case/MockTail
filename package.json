@@ -21,6 +21,8 @@
     "lint": "echo 'Linting...'",
     "generate-icons": "open icons/generate-icons.html",
     "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:run": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage"
   },

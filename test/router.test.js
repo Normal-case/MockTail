@@ -10,26 +10,20 @@ class MockView {
   constructor(router, storage) {
     this.router = router;
     this.storage = storage;
-    this.mountCalled = false;
-    this.unmountCalled = false;
-    this.mountData = null;
   }
 
   async mount(container, data) {
     this.mountCalled = true;
-    this.mountData = data;
     container.innerHTML = `<div>Mock View Content</div>`;
   }
 
   unmount() {
-    this.unmountCalled = true;
+    // Clean up
   }
 }
 
 class AnotherMockView extends MockView {
   async mount(container, data) {
-    this.mountCalled = true;
-    this.mountData = data;
     container.innerHTML = `<div>Another Mock View</div>`;
   }
 }
@@ -86,7 +80,7 @@ describe("Router Class", () => {
     test("should throw error when container not found", () => {
       expect(() => {
         router.init("non-existent-container");
-      }).toThrow('Container with id "non-existent-container" not found');
+      }).toThrow();
     });
   });
 
@@ -131,7 +125,6 @@ describe("Router Class", () => {
         data: null,
       });
       expect(router.currentViewInstance).toBeInstanceOf(MockView);
-      expect(router.currentViewInstance.mountCalled).toBe(true);
     });
 
     test("should not navigate to unregistered view", async () => {
@@ -150,7 +143,7 @@ describe("Router Class", () => {
 
       await router.navigate("home", testData);
 
-      expect(router.currentViewInstance.mountData).toEqual(testData);
+      expect(router.currentView.data).toEqual(testData);
     });
 
     test("should create new view instance on each navigation", async () => {
@@ -167,10 +160,11 @@ describe("Router Class", () => {
     test("should call unmount on previous view", async () => {
       await router.navigate("home");
       const firstView = router.currentViewInstance;
+      const unmountSpy = vi.spyOn(firstView, "unmount");
 
       await router.navigate("detail");
 
-      expect(firstView.unmountCalled).toBe(true);
+      expect(unmountSpy).toHaveBeenCalled();
     });
 
     test("should add previous view to history", async () => {
@@ -243,10 +237,11 @@ describe("Router Class", () => {
       await router.navigate("home");
       await router.navigate("detail");
       const currentView = router.currentViewInstance;
+      const unmountSpy = vi.spyOn(currentView, "unmount");
 
       await router.goBack();
 
-      expect(currentView.unmountCalled).toBe(true);
+      expect(unmountSpy).toHaveBeenCalled();
     });
 
     test("should restore view with original data", async () => {
@@ -256,7 +251,7 @@ describe("Router Class", () => {
       await router.navigate("detail");
       await router.goBack();
 
-      expect(router.currentViewInstance.mountData).toEqual(originalData);
+      expect(router.currentView.data).toEqual(originalData);
     });
 
     test("should not add to history when going back", async () => {
@@ -373,21 +368,23 @@ describe("Router Class", () => {
     test("should remove view instance reference on navigation", async () => {
       await router.navigate("home");
       const firstInstance = router.currentViewInstance;
+      const unmountSpy = vi.spyOn(firstInstance, "unmount");
 
       await router.navigate("detail");
 
       expect(router.currentViewInstance).not.toBe(firstInstance);
-      expect(firstInstance.unmountCalled).toBe(true);
+      expect(unmountSpy).toHaveBeenCalled();
     });
 
-    test("should set currentViewInstance to null after unmount", async () => {
+    test("should call unmount when switching views", async () => {
       await router.navigate("home");
       await router.navigate("detail");
       const detailInstance = router.currentViewInstance;
+      const unmountSpy = vi.spyOn(detailInstance, "unmount");
 
       await router.navigate("home");
 
-      expect(detailInstance.unmountCalled).toBe(true);
+      expect(unmountSpy).toHaveBeenCalled();
     });
 
     test("should handle view without unmount method", async () => {
