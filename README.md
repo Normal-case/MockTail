@@ -30,13 +30,13 @@ cd mocktail
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable **Developer mode** (toggle in the top-right corner)
 4. Click **Load unpacked** and select the `mocktail` folder
-5. Open DevTools (F12) and find the **Mocktail** tab
+5. Open DevTools and find the **Mocktail** tab
 
 > For detailed installation instructions, see [INSTALL.md](INSTALL.md).
 
 ### Basic Usage
 
-1. Open Chrome DevTools (F12) and navigate to the **Mocktail** tab
+1. Open Chrome DevTools and navigate to the **Mocktail** tab
 2. Create a new project by clicking the **+** button
 3. Add an API mock with:
    - **HTTP Method**: GET, POST, PUT, PATCH, or DELETE
@@ -49,18 +49,22 @@ cd mocktail
 ## 🎯 Use Cases
 
 ### Frontend Development
+
 - Develop UI components before the backend API is ready
 - Test various response scenarios (success, error, edge cases)
 
 ### QA Testing
+
 - Reproduce specific error conditions
 - Test edge cases and boundary values
 
 ### Debugging
+
 - Override API responses to isolate frontend issues
 - Monitor which requests are being intercepted
 
 ### Demos & Presentations
+
 - Create stable demo environments with predictable data
 - Showcase features without depending on live APIs
 
@@ -80,7 +84,6 @@ mocktail/
 ├── manifest.json                     # Chrome extension manifest (V3)
 ├── devtools.html / devtools.js       # DevTools panel registration
 ├── panel.html                        # DevTools panel UI entry point
-├── popup.html                        # Extension popup (quick info)
 ├── scripts/
 │   ├── background.js                 # Service worker (messaging, badge, logs)
 │   └── content.js                    # Fetch & XHR interceptor (MAIN world)
@@ -126,23 +129,6 @@ npm run test:coverage
 - All data is stored locally in Chrome Storage — nothing is sent to external servers
 - The content script runs in the MAIN world to intercept network calls, but only modifies responses matching your rules
 - Fully open-source for transparency
-
-## ⚠️ Important Notes
-
-- This extension is intended for **development and testing purposes only**
-- Do not use in production environments
-- Be cautious when handling sensitive data
-- Disable your mocking rules before using real services
-
-## 🤝 Contributing
-
-Bug reports, feature requests, and pull requests are welcome!
-
-1. Fork this repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## 📄 License
 
