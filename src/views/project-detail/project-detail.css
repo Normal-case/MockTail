@@ -1,121 +1,121 @@
 /* Project Detail View Styles */
 .project-detail-view {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .api-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .api-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    background-color: var(--color-bg-primary);
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-    transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .api-item:hover {
-    background-color: var(--color-bg-secondary);
-    box-shadow: var(--shadow-sm);
+  background-color: var(--color-bg-secondary);
+  box-shadow: var(--shadow-sm);
 }
 
 .api-item.disabled {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .api-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    flex: 1;
-    min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
 }
 
 .api-method {
-    font-size: var(--font-xs);
-    font-weight: var(--font-bold);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
-    text-transform: uppercase;
+  font-size: var(--font-xs);
+  font-weight: var(--font-bold);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  text-transform: uppercase;
 }
 
 .api-method.get {
-    background-color: #e3f2fd;
-    color: #1976d2;
+  background-color: #e3f2fd;
+  color: #1976d2;
 }
 
 .api-method.post {
-    background-color: #e8f5e9;
-    color: #388e3c;
+  background-color: #e8f5e9;
+  color: #388e3c;
 }
 
 .api-method.put {
-    background-color: #fff3e0;
-    color: #f57c00;
+  background-color: #fff3e0;
+  color: #f57c00;
 }
 
 .api-method.patch {
-    background-color: #fce4ec;
-    color: #c2185b;
+  background-color: #fce4ec;
+  color: #c2185b;
 }
 
 .api-method.delete {
-    background-color: #ffebee;
-    color: #d32f2f;
+  background-color: #ffebee;
+  color: #d32f2f;
 }
 
 .api-url {
-    font-size: var(--font-sm);
-    color: var(--color-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .btn-toggle {
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-full);
-    border: 2px solid var(--color-border);
-    background-color: var(--color-bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all var(--transition-fast);
-    cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border);
+  background-color: var(--color-bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+  cursor: pointer;
 }
 
 .btn-toggle:hover {
-    border-color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .btn-toggle.active {
-    background-color: var(--color-accent);
-    border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .toggle-icon {
-    color: white;
-    font-size: var(--font-sm);
-    font-weight: var(--font-bold);
+  color: white;
+  font-size: var(--font-sm);
+  font-weight: var(--font-bold);
 }
 
 .error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: var(--color-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-danger);
 }
