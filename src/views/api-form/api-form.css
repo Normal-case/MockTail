@@ -42,7 +42,7 @@
   min-width: 80px;
 }
 
-/* Select 스타일 */
+/* Select styles */
 select.input {
   cursor: pointer;
   appearance: none;
@@ -52,7 +52,7 @@ select.input {
   padding-right: var(--spacing-xl);
 }
 
-/* JSON Textarea 스타일 */
+/* JSON Textarea styles */
 #response-input {
   min-height: 200px;
   font-family: "Monaco", "Menlo", "Consolas", "Courier New", monospace;

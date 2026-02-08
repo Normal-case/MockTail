@@ -16,7 +16,7 @@ export class ApiFormView extends View {
 
   async render(data) {
     if (!data || !data.projectId) {
-      return '<div class="error">잘못된 접근입니다.</div>';
+      return '<div class="error">Invalid access.</div>';
     }
 
     this.projectId = data.projectId;
@@ -28,7 +28,7 @@ export class ApiFormView extends View {
       const project = await this.storage.getProject(this.projectId);
       this.api = project?.apis.find((api) => api.id === this.apiId);
       if (!this.api) {
-        return '<div class="error">API를 찾을 수 없습니다.</div>';
+        return '<div class="error">API not found.</div>';
       }
     }
 
@@ -46,7 +46,7 @@ export class ApiFormView extends View {
                         <button class="btn-icon" id="back-button">
                             <span class="icon-back">←</span>
                         </button>
-                        <h1 class="header-title">${isEdit ? "API 수정" : "API 추가"}</h1>
+                        <h1 class="header-title">${isEdit ? "Edit API" : "Add API"}</h1>
                     </div>
                 </div>
                 <div class="content">
@@ -90,17 +90,17 @@ export class ApiFormView extends View {
                               isEdit
                                 ? `
                                 <button type="button" class="btn btn-secondary" id="delete-button">
-                                    삭제
+                                    Delete
                                 </button>
                             `
                                 : ""
                             }
                             <div style="flex: 1;"></div>
                             <button type="button" class="btn btn-secondary" id="cancel-button">
-                                취소
+                                Cancel
                             </button>
                             <button type="submit" class="btn btn-primary">
-                                ${isEdit ? "수정" : "추가"}
+                                ${isEdit ? "Save" : "Add"}
                             </button>
                         </div>
                     </form>
@@ -146,11 +146,11 @@ export class ApiFormView extends View {
 
     try {
       JSON.parse(jsonString);
-      hint.textContent = "✓ 유효한 JSON 형식입니다";
+      hint.textContent = "✓ Valid JSON";
       hint.className = "input-hint success";
       return true;
     } catch (e) {
-      hint.textContent = "⚠ JSON 형식이 올바르지 않습니다: " + e.message;
+      hint.textContent = "⚠ Invalid JSON: " + e.message;
       hint.className = "input-hint error";
       return false;
     }
@@ -163,7 +163,7 @@ export class ApiFormView extends View {
 
     // URL validation
     if (!url) {
-      alert("URL을 입력해주세요.");
+      alert("Please enter a URL.");
       return;
     }
 
@@ -172,7 +172,7 @@ export class ApiFormView extends View {
     try {
       response = JSON.parse(responseText);
     } catch (e) {
-      alert("JSON 형식이 올바르지 않습니다.");
+      alert("Invalid JSON format.");
       return;
     }
 
@@ -189,12 +189,12 @@ export class ApiFormView extends View {
       this.router.goBack();
     } catch (error) {
       console.error("API save error:", error);
-      alert("저장 중 오류가 발생했습니다.");
+      alert("Failed to save.");
     }
   }
 
   async handleDelete() {
-    if (!confirm("정말 삭제하시겠습니까?")) {
+    if (!confirm("Are you sure you want to delete this API?")) {
       return;
     }
 
@@ -203,7 +203,7 @@ export class ApiFormView extends View {
       this.router.goBack();
     } catch (error) {
       console.error("API delete error:", error);
-      alert("삭제 중 오류가 발생했습니다.");
+      alert("Failed to delete.");
     }
   }
 }

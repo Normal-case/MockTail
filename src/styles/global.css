@@ -20,7 +20,7 @@ body {
   flex-direction: column;
 }
 
-/* View 공통 스타일 */
+/* View common styles */
 .view {
   width: 100%;
   height: 100%;
@@ -32,7 +32,7 @@ body {
   display: none;
 }
 
-/* Header 공통 스타일 */
+/* Header common styles */
 .header {
   display: flex;
   align-items: center;
@@ -55,7 +55,7 @@ body {
   color: var(--color-text-primary);
 }
 
-/* Content 공통 스타일 */
+/* Content common styles */
 .content {
   flex: 1;
   overflow-y: auto;
@@ -79,7 +79,7 @@ body {
   background: var(--color-text-secondary);
 }
 
-/* 유틸리티 클래스 */
+/* Utility classes */
 .text-center {
   text-align: center;
 }

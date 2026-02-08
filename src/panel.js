@@ -1,6 +1,6 @@
 /**
- * Mocktail Popup
- * Chrome Extension Popup main entry point
+ * Mocktail Panel
+ * Chrome Extension DevTools Panel main entry point
  */
 
 import { Router } from "./core/router.js";
@@ -32,7 +32,7 @@ async function init() {
     console.error("App initialization error:", error);
     document.getElementById("app").innerHTML = `
             <div style="padding: 20px; text-align: center; color: #d32f2f;">
-                <p>앱을 시작할 수 없습니다.</p>
+                <p>Failed to start the app.</p>
                 <p style="font-size: 12px; color: #666; margin-top: 8px;">${error.message}</p>
             </div>
         `;

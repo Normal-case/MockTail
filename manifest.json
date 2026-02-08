@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Mocktail",
   "version": "1.0.0",
-  "description": "🍹 API 응답을 가로채고 수정하는 개발자 도구",
+  "description": "🍹 Developer tool for intercepting and modifying API responses",
   "devtools_page": "devtools.html",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["<all_urls>"],

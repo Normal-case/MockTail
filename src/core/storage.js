@@ -1,9 +1,9 @@
 /**
- * Chrome Storage API 래퍼
- * 프로젝트와 API Mock 데이터를 관리합니다
+ * Chrome Storage API Wrapper
+ * Manages project and API mock data
  */
 
-// Storage 키 상수 (읽기 전용)
+// Storage key constant (read-only)
 const STORAGE_KEY = "mocktail_data";
 
 export class Storage {
@@ -12,7 +12,7 @@ export class Storage {
   }
 
   /**
-   * 전체 데이터 가져오기
+   * Get all data
    */
   async getData() {
     return new Promise((resolve) => {
@@ -23,7 +23,7 @@ export class Storage {
   }
 
   /**
-   * 전체 데이터 저장하기
+   * Save all data
    */
   async setData(data) {
     return new Promise((resolve) => {
@@ -32,7 +32,7 @@ export class Storage {
   }
 
   /**
-   * 모든 프로젝트 가져오기
+   * Get all projects
    */
   async getProjects() {
     const data = await this.getData();
@@ -40,7 +40,7 @@ export class Storage {
   }
 
   /**
-   * 특정 프로젝트 가져오기
+   * Get a specific project
    */
   async getProject(projectId) {
     const projects = await this.getProjects();
@@ -48,7 +48,7 @@ export class Storage {
   }
 
   /**
-   * 새 프로젝트 생성
+   * Create a new project
    */
   async createProject(name = "Untitled Project") {
     const data = await this.getData();
@@ -64,7 +64,7 @@ export class Storage {
   }
 
   /**
-   * 프로젝트 업데이트
+   * Update a project
    */
   async updateProject(projectId, updates) {
     const data = await this.getData();
@@ -78,7 +78,7 @@ export class Storage {
   }
 
   /**
-   * 프로젝트 삭제
+   * Delete a project
    */
   async deleteProject(projectId) {
     const data = await this.getData();
@@ -87,7 +87,7 @@ export class Storage {
   }
 
   /**
-   * API Mock 가져오기
+   * Get API mocks
    */
   async getAPIs(projectId) {
     const project = await this.getProject(projectId);
@@ -95,7 +95,7 @@ export class Storage {
   }
 
   /**
-   * API Mock 추가
+   * Add an API mock
    */
   async createAPI(projectId, apiData) {
     const project = await this.getProject(projectId);
@@ -116,7 +116,7 @@ export class Storage {
   }
 
   /**
-   * API Mock 업데이트
+   * Update an API mock
    */
   async updateAPI(projectId, apiId, updates) {
     const project = await this.getProject(projectId);
@@ -132,7 +132,7 @@ export class Storage {
   }
 
   /**
-   * API Mock 삭제
+   * Delete an API mock
    */
   async deleteAPI(projectId, apiId) {
     const project = await this.getProject(projectId);
@@ -143,7 +143,7 @@ export class Storage {
   }
 
   /**
-   * API Mock 활성화/비활성화 토글
+   * Toggle API mock enable/disable
    */
   async toggleAPI(projectId, apiId) {
     const project = await this.getProject(projectId);
@@ -159,7 +159,7 @@ export class Storage {
   }
 
   /**
-   * 고유 ID 생성
+   * Generate a unique ID
    */
   generateId() {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

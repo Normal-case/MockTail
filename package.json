@@ -1,7 +1,7 @@
 {
   "name": "mocktail",
   "version": "1.0.0",
-  "description": "🍹 API 응답을 가로채고 수정하는 개발자를 위한 크롬 확장 프로그램",
+  "description": "🍹 Chrome extension for developers to intercept and modify API responses",
   "author": "Your Name",
   "license": "MIT",
   "type": "module",

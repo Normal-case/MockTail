@@ -19,6 +19,9 @@ yarn-error.log*
 dist/
 build/
 
+# 테스트 커버리지
+coverage/
+
 # 임시 파일
 *.tmp
 *.temp

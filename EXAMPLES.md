@@ -1,125 +1,147 @@
-# 🍹 Mocktail 사용 예시
+# 🍹 Mocktail Usage Examples
 
-이 문서에서는 Mocktail을 활용한 다양한 실제 사용 사례를 소개합니다.
+This document provides practical examples for using Mocktail in real-world scenarios.
 
-## 📚 목차
+## 📚 Table of Contents
 
-1. [기본 사용법](#기본-사용법)
-2. [REST API 모킹](#rest-api-모킹)
-3. [GraphQL API 모킹](#graphql-api-모킹)
-4. [에러 시나리오 테스트](#에러-시나리오-테스트)
-5. [인증/권한 테스트](#인증권한-테스트)
-6. [페이지네이션 테스트](#페이지네이션-테스트)
-7. [실시간 데이터 모킹](#실시간-데이터-모킹)
+1. [Basic Usage](#basic-usage)
+2. [REST API Mocking](#rest-api-mocking)
+3. [Error Scenario Testing](#error-scenario-testing)
+4. [Authentication Testing](#authentication-testing)
+5. [Pagination Testing](#pagination-testing)
+6. [Real-time Data Mocking](#real-time-data-mocking)
+7. [Import/Export Workflow](#importexport-workflow)
+8. [Tips & Tricks](#tips--tricks)
 
 ---
 
-## 기본 사용법
+## Basic Usage
 
-### 간단한 JSON 응답 교체
+### Creating Your First Mock
 
-**시나리오**: `/api/status` 엔드포인트의 응답을 항상 "온라인"으로 변경
+1. Open Chrome DevTools (F12) → Go to the **Mocktail** tab
+2. Click **+** to create a new project (e.g., "My App")
+3. Click on the project to open it
+4. Click **+** to add an API mock
+5. Fill in the form:
+   - **Method**: GET
+   - **URL**: `https://api.example.com/status`
+   - **Response**:
 
 ```json
 {
-  "name": "항상 온라인",
-  "urlPattern": "/api/status",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
-    "status": "online",
-    "message": "서버가 정상 작동 중입니다"
-  }
+  "status": "online",
+  "message": "Server is running normally"
 }
 ```
 
----
+6. Click **Add** — the mock is now active!
 
-## REST API 모킹
+### Project JSON Structure (for Import)
 
-### 1. 사용자 목록 API
+When importing a project, use this format:
 
 ```json
 {
-  "name": "Mock User List",
-  "urlPattern": "https://jsonplaceholder.typicode.com/users",
-  "matchType": "exact",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
-    "users": [
-      {
-        "id": 1,
-        "name": "홍길동",
-        "email": "hong@example.com",
-        "username": "hongkd",
-        "phone": "010-1234-5678"
+  "name": "My App",
+  "apis": [
+    {
+      "url": "https://api.example.com/status",
+      "method": "GET",
+      "response": {
+        "status": "online",
+        "message": "Server is running normally"
       },
-      {
-        "id": 2,
-        "name": "김영희",
-        "email": "kim@example.com",
-        "username": "kimyh",
-        "phone": "010-9876-5432"
-      }
-    ],
-    "total": 2,
-    "page": 1
-  }
+      "enabled": true
+    }
+  ]
 }
 ```
 
-### 2. 특정 사용자 상세 정보
+---
+
+## REST API Mocking
+
+### 1. User List API
 
 ```json
 {
-  "name": "Mock User Detail",
-  "urlPattern": "/api/users/\\d+",
-  "matchType": "regex",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "name": "User List Project",
+  "apis": [
+    {
+      "url": "https://jsonplaceholder.typicode.com/users",
+      "method": "GET",
+      "response": {
+        "users": [
+          {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "username": "johnd",
+            "phone": "555-1234"
+          },
+          {
+            "id": 2,
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "username": "janes",
+            "phone": "555-5678"
+          }
+        ],
+        "total": 2,
+        "page": 1
+      },
+      "enabled": true
+    }
+  ]
+}
+```
+
+### 2. User Detail API
+
+```json
+{
+  "url": "https://api.example.com/users/1",
+  "method": "GET",
+  "response": {
     "id": 1,
-    "name": "테스트 유저",
+    "name": "Test User",
     "email": "test@example.com",
     "avatar": "https://i.pravatar.cc/150?img=1",
     "role": "admin",
     "createdAt": "2024-01-01T00:00:00Z",
     "profile": {
-      "bio": "개발자입니다",
-      "location": "서울",
+      "bio": "Software developer",
+      "location": "San Francisco",
       "website": "https://example.com"
     }
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 3. 게시글 목록
+### 3. Blog Posts API
 
 ```json
 {
-  "name": "Mock Posts",
-  "urlPattern": "/api/posts",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/posts",
+  "method": "GET",
+  "response": {
     "posts": [
       {
         "id": 1,
-        "title": "Mocktail 사용법",
-        "content": "Mocktail은 API를 쉽게 모킹할 수 있는 도구입니다.",
-        "author": "홍길동",
+        "title": "Getting Started with Mocktail",
+        "content": "Mocktail makes it easy to mock API responses.",
+        "author": "John Doe",
         "createdAt": "2024-01-15T10:30:00Z",
         "likes": 42,
         "comments": 7
       },
       {
         "id": 2,
-        "title": "크롬 확장 프로그램 개발",
-        "content": "Manifest V3로 확장 프로그램을 만들어봅시다.",
-        "author": "김영희",
+        "title": "Chrome Extension Development",
+        "content": "Building extensions with Manifest V3.",
+        "author": "Jane Smith",
         "createdAt": "2024-01-14T09:15:00Z",
         "likes": 28,
         "comments": 3
@@ -131,243 +153,198 @@
       "total": 2,
       "totalPages": 1
     }
-  }
+  },
+  "enabled": true
+}
+```
+
+### 4. Create Resource (POST)
+
+```json
+{
+  "url": "https://api.example.com/users",
+  "method": "POST",
+  "response": {
+    "id": 42,
+    "name": "New User",
+    "email": "newuser@example.com",
+    "createdAt": "2024-06-15T12:00:00Z"
+  },
+  "enabled": true
 }
 ```
 
 ---
 
-## GraphQL API 모킹
+## Error Scenario Testing
 
-### GraphQL 쿼리 응답
+### 1. Server Error (500)
 
-```json
-{
-  "name": "Mock GraphQL User Query",
-  "urlPattern": "https://api.example.com/graphql",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
-    "data": {
-      "user": {
-        "id": "1",
-        "name": "홍길동",
-        "email": "hong@example.com",
-        "posts": [
-          {
-            "id": "101",
-            "title": "첫 번째 포스트",
-            "content": "안녕하세요"
-          },
-          {
-            "id": "102",
-            "title": "두 번째 포스트",
-            "content": "반갑습니다"
-          }
-        ]
-      }
-    }
-  }
-}
-```
-
----
-
-## 에러 시나리오 테스트
-
-### 1. 서버 에러 (500)
+Override status code to simulate a server crash:
 
 ```json
 {
-  "name": "Force 500 Error",
-  "urlPattern": "/api/users",
-  "matchType": "contains",
-  "actionType": "replace",
-  "statusCode": 500,
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/users",
+  "method": "GET",
+  "response": {
     "error": "Internal Server Error",
-    "message": "서버에서 오류가 발생했습니다",
+    "message": "An unexpected error occurred on the server",
     "code": "SERVER_ERROR"
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 2. 인증 실패 (401)
+> **Note**: Custom status code overrides will be available in a future update. Currently, the response body is replaced while keeping the original status code.
+
+### 2. Unauthorized (401)
 
 ```json
 {
-  "name": "Force 401 Unauthorized",
-  "urlPattern": "/api/protected",
-  "matchType": "contains",
-  "actionType": "replace",
-  "statusCode": 401,
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/protected",
+  "method": "GET",
+  "response": {
     "error": "Unauthorized",
-    "message": "인증이 필요합니다",
+    "message": "Authentication is required",
     "code": "AUTH_REQUIRED"
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 3. 권한 부족 (403)
+### 3. Forbidden (403)
 
 ```json
 {
-  "name": "Force 403 Forbidden",
-  "urlPattern": "/api/admin",
-  "matchType": "contains",
-  "actionType": "replace",
-  "statusCode": 403,
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/admin",
+  "method": "GET",
+  "response": {
     "error": "Forbidden",
-    "message": "권한이 없습니다",
+    "message": "You do not have permission to access this resource",
     "code": "PERMISSION_DENIED"
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 4. 리소스 없음 (404)
+### 4. Not Found (404)
 
 ```json
 {
-  "name": "Force 404 Not Found",
-  "urlPattern": "/api/users/999",
-  "matchType": "contains",
-  "actionType": "replace",
-  "statusCode": 404,
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/users/999",
+  "method": "GET",
+  "response": {
     "error": "Not Found",
-    "message": "사용자를 찾을 수 없습니다",
+    "message": "User not found",
     "code": "USER_NOT_FOUND"
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 5. 유효성 검사 실패 (422)
+### 5. Validation Error (422)
 
 ```json
 {
-  "name": "Validation Error",
-  "urlPattern": "/api/users",
-  "matchType": "contains",
-  "actionType": "replace",
-  "statusCode": 422,
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/users",
+  "method": "POST",
+  "response": {
     "error": "Validation Error",
-    "message": "입력 데이터가 올바르지 않습니다",
+    "message": "The provided data is invalid",
     "errors": {
-      "email": ["이메일 형식이 올바르지 않습니다"],
-      "password": ["비밀번호는 8자 이상이어야 합니다"]
+      "email": ["Email format is invalid"],
+      "password": ["Password must be at least 8 characters"]
     }
-  }
+  },
+  "enabled": true
 }
 ```
 
 ---
 
-## 인증/권한 테스트
+## Authentication Testing
 
-### 1. 로그인 성공
+### 1. Login Success
 
 ```json
 {
-  "name": "Login Success",
-  "urlPattern": "/api/auth/login",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/auth/login",
+  "method": "POST",
+  "response": {
     "success": true,
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock-token",
     "refreshToken": "refresh-token-12345",
     "expiresIn": 3600,
     "user": {
       "id": 1,
-      "name": "홍길동",
-      "email": "hong@example.com",
+      "name": "John Doe",
+      "email": "john@example.com",
       "role": "admin",
       "avatar": "https://i.pravatar.cc/150?img=1"
     }
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 2. 로그인 실패
+### 2. Login Failure
 
 ```json
 {
-  "name": "Login Failed",
-  "urlPattern": "/api/auth/login",
-  "matchType": "contains",
-  "actionType": "replace",
-  "statusCode": 401,
-  "enabled": false,
-  "mockData": {
+  "url": "https://api.example.com/auth/login",
+  "method": "POST",
+  "response": {
     "success": false,
     "error": "Invalid Credentials",
-    "message": "이메일 또는 비밀번호가 올바르지 않습니다"
-  }
+    "message": "Email or password is incorrect"
+  },
+  "enabled": true
 }
 ```
 
-### 3. 토큰 갱신
+### 3. Token Refresh
 
 ```json
 {
-  "name": "Refresh Token",
-  "urlPattern": "/api/auth/refresh",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/auth/refresh",
+  "method": "POST",
+  "response": {
     "token": "new-access-token-67890",
     "refreshToken": "new-refresh-token-67890",
     "expiresIn": 3600
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 4. 관리자 권한 부여
+### 4. Current User (Admin Role)
 
 ```json
 {
-  "name": "Force Admin Role",
-  "urlPattern": "/api/me",
-  "matchType": "contains",
-  "actionType": "merge",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/me",
+  "method": "GET",
+  "response": {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@example.com",
     "role": "admin",
-    "permissions": [
-      "read",
-      "write",
-      "delete",
-      "admin"
-    ]
-  }
+    "permissions": ["read", "write", "delete", "admin"]
+  },
+  "enabled": true
 }
 ```
 
 ---
 
-## 페이지네이션 테스트
+## Pagination Testing
 
-### 1. 첫 페이지
+### 1. First Page
 
 ```json
 {
-  "name": "Page 1",
-  "urlPattern": "/api/posts?page=1",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/posts?page=1",
+  "method": "GET",
+  "response": {
     "data": [
       {"id": 1, "title": "Post 1"},
       {"id": 2, "title": "Post 2"},
@@ -381,20 +358,18 @@
       "hasNext": true,
       "hasPrev": false
     }
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 2. 마지막 페이지
+### 2. Last Page
 
 ```json
 {
-  "name": "Last Page",
-  "urlPattern": "/api/posts?page=4",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/posts?page=4",
+  "method": "GET",
+  "response": {
     "data": [
       {"id": 10, "title": "Post 10"}
     ],
@@ -406,57 +381,74 @@
       "hasNext": false,
       "hasPrev": true
     }
-  }
+  },
+  "enabled": true
+}
+```
+
+### 3. Empty Result
+
+```json
+{
+  "url": "https://api.example.com/search?q=nonexistent",
+  "method": "GET",
+  "response": {
+    "data": [],
+    "pagination": {
+      "page": 1,
+      "perPage": 10,
+      "total": 0,
+      "totalPages": 0,
+      "hasNext": false,
+      "hasPrev": false
+    }
+  },
+  "enabled": true
 }
 ```
 
 ---
 
-## 실시간 데이터 모킹
+## Real-time Data Mocking
 
-### 1. 알림 목록
+### 1. Notifications
 
 ```json
 {
-  "name": "Notifications",
-  "urlPattern": "/api/notifications",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/notifications",
+  "method": "GET",
+  "response": {
     "notifications": [
       {
         "id": 1,
         "type": "message",
-        "title": "새 메시지",
-        "message": "홍길동님이 메시지를 보냈습니다",
+        "title": "New Message",
+        "message": "John Doe sent you a message",
         "read": false,
         "createdAt": "2024-01-15T10:30:00Z"
       },
       {
         "id": 2,
         "type": "like",
-        "title": "좋아요",
-        "message": "김영희님이 게시글을 좋아합니다",
+        "title": "New Like",
+        "message": "Jane Smith liked your post",
         "read": true,
         "createdAt": "2024-01-14T15:20:00Z"
       }
     ],
     "unreadCount": 1
-  }
+  },
+  "enabled": true
 }
 ```
 
-### 2. 실시간 통계
+### 2. Dashboard Statistics
 
 ```json
 {
-  "name": "Real-time Stats",
-  "urlPattern": "/api/stats",
-  "matchType": "contains",
-  "actionType": "replace",
-  "enabled": true,
-  "mockData": {
+  "url": "https://api.example.com/stats",
+  "method": "GET",
+  "response": {
     "users": {
       "total": 1234,
       "online": 56,
@@ -470,59 +462,102 @@
       "today": 123456,
       "month": 3456789
     }
-  }
+  },
+  "enabled": true
 }
 ```
 
 ---
 
-## 디버깅 정보 추가
+## Import/Export Workflow
 
-### 모든 API 응답에 디버그 정보 추가
+### Exporting a Project
+
+1. Open the project detail screen
+2. Click the **📋 Export** button
+3. Copy the JSON to clipboard
+4. Share the JSON with your team (via Slack, email, etc.)
+
+### Importing a Project
+
+1. On the project list screen, click the **📥 Import** button
+2. Paste the exported JSON into the text area
+3. Click **Import**
+4. The project with all its API mocks will be created
+
+### Example: Complete Project for Import
 
 ```json
 {
-  "name": "Add Debug Info",
-  "urlPattern": "api.",
-  "matchType": "contains",
-  "actionType": "merge",
-  "enabled": true,
-  "mockData": {
-    "_debug": {
-      "interceptedBy": "Mocktail",
-      "timestamp": "2024-01-15T10:30:00Z",
-      "isMocked": true
+  "name": "E-commerce API Mocks",
+  "apis": [
+    {
+      "url": "https://api.shop.com/products",
+      "method": "GET",
+      "response": {
+        "products": [
+          {"id": 1, "name": "Laptop", "price": 999.99, "inStock": true},
+          {"id": 2, "name": "Phone", "price": 699.99, "inStock": false}
+        ]
+      },
+      "enabled": true
+    },
+    {
+      "url": "https://api.shop.com/cart",
+      "method": "GET",
+      "response": {
+        "items": [
+          {"productId": 1, "quantity": 2, "price": 999.99}
+        ],
+        "total": 1999.98
+      },
+      "enabled": true
+    },
+    {
+      "url": "https://api.shop.com/checkout",
+      "method": "POST",
+      "response": {
+        "orderId": "ORD-12345",
+        "status": "confirmed",
+        "estimatedDelivery": "2024-02-01"
+      },
+      "enabled": true
     }
-  }
+  ]
 }
 ```
 
 ---
 
-## 팁과 트릭
+## Tips & Tricks
 
-### 1. 여러 규칙 조합하기
+### 1. Organize by Feature
 
-- 일반적인 규칙 (모든 API에 적용)
-- 특정 규칙 (특정 엔드포인트에만 적용)
-- 우선순위를 고려하여 규칙 배치
+Create separate projects for different features or teams:
+- "Auth Flows" — login, signup, token refresh mocks
+- "User Dashboard" — stats, notifications, profile mocks
+- "E-commerce" — products, cart, checkout mocks
 
-### 2. 정규식 활용
+### 2. Toggle Mocks Quickly
 
-```
-/api/users/\d+        # /api/users/1, /api/users/123 매칭
-/api/(posts|comments) # posts 또는 comments 매칭
-```
+Use the toggle button (✓) on each API item to enable/disable mocks without deleting them. This is useful for:
+- Switching between success and error responses
+- Temporarily using real API responses for comparison
 
-### 3. 개발 워크플로우
+### 3. Development Workflow
 
-1. 실제 API 호출로 시작
-2. 필요한 경우 Mocktail로 응답 수정
-3. 다양한 시나리오 테스트
-4. 규칙 내보내기로 팀원과 공유
+1. Start with real API calls during normal development
+2. Add Mocktail mocks when you need specific test data
+3. Toggle individual mocks on/off as needed
+4. Export your project configuration to share with teammates
+
+### 4. Testing Error Handling
+
+Create multiple mock versions for the same endpoint:
+- One project with success responses (enabled)
+- Another project with error responses (disabled by default)
+- Switch between them by toggling the mocks
 
 ---
 
-**더 많은 예시가 필요하신가요? [GitHub Issues](https://github.com/yourusername/mocktail/issues)에 요청해주세요!**
-
-
+**Need more examples? Open an issue on [GitHub](https://github.com/user/mocktail/issues)!**

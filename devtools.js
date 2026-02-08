@@ -1,13 +1,13 @@
 /**
  * Mocktail DevTools
- * DevTools Panel을 생성합니다
+ * Creates the DevTools Panel
  */
 
 chrome.devtools.panels.create(
-  "Mocktail", // 패널 이름
-  "icons/icon.svg", // 아이콘 경로 (옵션)
-  "panel.html", // 패널 HTML
+  "Mocktail", // Panel name
+  "icons/icon.svg", // Icon path (optional)
+  "panel.html", // Panel HTML
   function (panel) {
-    console.log("🍹 Mocktail DevTools Panel 생성됨");
+    console.log("🍹 Mocktail DevTools Panel created");
   }
 );

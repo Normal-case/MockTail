@@ -80,7 +80,6 @@
   cursor: pointer;
 }
 
-.project-name:not([readonly]):hover,
 .project-name.editing {
   background-color: var(--color-bg-hover);
   cursor: text;
@@ -104,4 +103,27 @@
   background-color: var(--color-bg-secondary);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-full);
+}
+
+.btn-action {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.btn-action:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.btn-delete:hover {
+  background-color: #ffebee;
 }

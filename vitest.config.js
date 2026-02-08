@@ -2,16 +2,16 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    // DOM 환경 (브라우저 API 시뮬레이션)
+    // DOM environment (browser API simulation)
     environment: "happy-dom",
 
-    // 전역 변수로 describe, test, expect 사용 가능
+    // Use describe, test, expect as globals
     globals: true,
 
-    // 각 테스트 파일 실행 전에 실행될 설정 파일
+    // Setup file to run before each test file
     setupFiles: "./test/setup.js",
 
-    // 커버리지 설정
+    // Coverage settings
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "json"],
@@ -20,9 +20,8 @@ export default defineConfig({
         "**/*.config.js",
         "**/node_modules/**",
         "devtools.js",
-        "popup-toggle.js",
       ],
-      // 커버리지 목표 (선택사항)
+      // Coverage thresholds (optional)
       thresholds: {
         lines: 70,
         functions: 70,
@@ -31,7 +30,7 @@ export default defineConfig({
       },
     },
 
-    // 테스트 타임아웃 (밀리초)
+    // Test timeout (milliseconds)
     testTimeout: 10000,
   },
 });
