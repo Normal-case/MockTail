@@ -50,7 +50,7 @@ export class ProjectDetailView extends View {
                     </div>
                     <div class="header-right">
                         <button class="btn-icon" id="export-project" title="Export">
-                            <span>📋</span>
+                            <image src="icons/export.png" alt="export" width="20" height="20" />
                         </button>
                         <button class="btn-icon" id="add-api">
                             <span class="icon-plus">+</span>

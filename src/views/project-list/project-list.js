@@ -47,7 +47,7 @@ export class ProjectListView extends View {
                     <h1 class="header-title">Projects</h1>
                     <div class="header-right">
                         <button class="btn-icon" id="import-project" title="Import">
-                            <span>📥</span>
+                            <image src="icons/import.png" alt="import" width="20" height="20" />
                         </button>
                         <button class="btn-icon" id="add-project">
                             <span class="icon-plus">+</span>
